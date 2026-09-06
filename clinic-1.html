@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>استقبال المرضى الذكي — مجمع الخليج الطبي</title>
+<style>
+  :root{
+    --navy:#1B3A8C; --navy-d:#142C6B; --green:#22B14C; --green-d:#1B9440;
+    --green-bg:#E8F7ED; --navy-bg:#EDF1FB;
+    --ink:#16203A; --muted:#5C6784; --line:#E1E6F0; --bg:#F5F7FB; --card:#fff;
+    --urgent:#C0392B; --urgent-bg:#FBEAE8;
+  }
+  *{ box-sizing:border-box; }
+  body{ margin:0; background:var(--bg); color:var(--ink);
+        font-family:-apple-system,"Segoe UI",Tahoma,sans-serif; line-height:1.7;
+        padding:0 0 44px; }
+  .wrap{ max-width:560px; margin:0 auto; padding:0 16px; }
+
+  .bar{ background:var(--navy); padding:16px 0; margin-bottom:22px; }
+  .bar .wrap{ display:flex; align-items:center; gap:11px; }
+  .k{ width:38px; height:38px; background:var(--green); border-radius:8px; color:#fff;
+      font-size:23px; font-weight:700; display:flex; align-items:center; justify-content:center;
+      font-family:Arial,sans-serif; flex:none; }
+  .bn{ color:#fff; font-size:17px; font-weight:600; line-height:1.3; }
+  .be{ color:#B9C6E8; font-size:11px; letter-spacing:.07em; }
+
+  h1{ font-size:22px; font-weight:600; margin:0 0 6px; line-height:1.45; }
+  .sub{ color:var(--muted); margin:0 0 20px; font-size:15px; }
+  .card{ background:var(--card); border:1px solid var(--line); border-radius:14px; padding:18px;
+         box-shadow:0 1px 3px rgba(27,58,140,.06); }
+  label{ display:block; font-size:14px; color:var(--muted); margin:0 0 6px; }
+  textarea,input{ width:100%; font:inherit; font-size:16px; padding:12px;
+            border:1px solid var(--line); border-radius:10px; background:#fff; color:var(--ink); }
+  textarea{ min-height:110px; resize:vertical; }
+  textarea:focus,input:focus{ outline:none; border-color:var(--navy); box-shadow:0 0 0 3px var(--navy-bg); }
+  .two{ display:flex; gap:10px; margin-bottom:14px; }
+  .two>div{ flex:1; min-width:0; }
+  .opt{ color:#9aa4bd; font-weight:400; }
+  button{ width:100%; font:inherit; font-size:16px; font-weight:600; padding:14px; margin-top:14px;
+          border:0; border-radius:10px; background:var(--green); color:#fff; cursor:pointer; }
+  button:active{ background:var(--green-d); }
+  button:disabled{ opacity:.6; cursor:default; }
+  .chips{ display:flex; flex-wrap:wrap; gap:8px; margin:10px 0 0; }
+  .chip{ font-size:13px; background:var(--navy-bg); color:var(--navy); border:0; width:auto;
+         padding:7px 13px; border-radius:20px; margin:0; cursor:pointer; font-weight:500; }
+  .err{ color:var(--urgent); font-size:14px; margin:10px 0 0; display:none; }
+  .note{ text-align:center; font-size:13px; color:var(--muted); margin:12px 0 0; }
+  #out{ display:none; margin-top:20px; }
+  .h2{ font-size:15px; font-weight:600; margin:20px 0 8px; color:var(--navy);
+       border-right:3px solid var(--green); padding-right:9px; }
+  .row{ display:flex; justify-content:space-between; align-items:center;
+        border-bottom:1px solid var(--line); padding:11px 0; gap:12px; }
+  .row:last-child{ border-bottom:0; }
+  .k2{ font-size:14px; color:var(--muted); white-space:nowrap; }
+  .v{ font-size:15px; font-weight:600; text-align:left; }
+  .dept{ color:var(--navy); }
+  .tag{ font-size:13px; padding:4px 12px; border-radius:7px;
+        background:var(--green-bg); color:var(--green-d); font-weight:600; }
+  .tag.u{ background:var(--urgent-bg); color:var(--urgent); }
+  .reply{ background:var(--navy-bg); border-radius:10px; padding:14px; margin-top:6px;
+          font-size:15px; color:var(--navy-d); }
+  .time{ text-align:center; font-size:13px; color:var(--muted); margin-top:16px; }
+  .foot{ text-align:center; font-size:12px; color:var(--muted); margin-top:22px; }
+  .spin{ display:inline-block; width:15px; height:15px; border:2px solid rgba(255,255,255,.35);
+         border-top-color:#fff; border-radius:50%; animation:r .7s linear infinite;
+         vertical-align:-3px; margin-left:8px; }
+  @keyframes r{ to{ transform:rotate(360deg);} }
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <div class="wrap">
+    <div class="k">K</div>
+    <div>
+      <div class="bn">مجمع الخليج الطبي</div>
+      <div class="be">ALKHALEEJ MEDICAL CENTER</div>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+  <h1>استقبال المرضى الذكي</h1>
+  <p class="sub">اكتب رسالة كما يكتبها مريض حقيقي. النظام يفهم الشكوى، يحدد القسم المناسب، ويكتب ملخصًا للطبيب — خلال ثوانٍ.</p>
+
+  <div class="card">
+    <div class="two">
+      <div>
+        <label for="nm">الاسم <span class="opt">(اختياري)</span></label>
+        <input id="nm" type="text" placeholder="محمد">
+      </div>
+      <div>
+        <label for="ph">رقم التواصل</label>
+        <input id="ph" type="tel" inputmode="tel" placeholder="05xxxxxxxx">
+      </div>
+    </div>
+
+    <label for="m">رسالة المريض</label>
+    <textarea id="m" placeholder="مثال: عندي وجع في ضرسي من يومين والخد منتفخ…"></textarea>
+
+    <div class="chips">
+      <button class="chip" type="button" data-t="عندي وجع شديد في ضرسي من يومين والخد منتفخ">ألم أسنان</button>
+      <button class="chip" type="button" data-t="ولدي عمره ٥ سنوات عنده حرارة وكحة من أمس">طفل مريض</button>
+      <button class="chip" type="button" data-t="عندي حبوب وحكة في الوجه من أسبوع ولا تروح">مشكلة جلدية</button>
+      <button class="chip" type="button" data-t="وقعت وصار عندي ألم في الكاحل ما أقدر أمشي عليه">إصابة</button>
+    </div>
+
+    <button id="go" type="button">أرسل الرسالة</button>
+    <p class="err" id="err"></p>
+    <p class="note">لا يُحفظ أي بريد أو رقم. نسخة تجريبية.</p>
+
+    <div id="out">
+      <div class="h2">ما يصل لفريق الاستقبال</div>
+      <div class="row"><span class="k2">الشكوى</span><span class="v" id="c"></span></div>
+      <div class="row"><span class="k2">القسم المقترح</span><span class="v dept" id="d"></span></div>
+      <div class="row"><span class="k2">الأولوية</span><span id="p"></span></div>
+      <div class="row"><span class="k2">ملخص للطبيب</span><span class="v" id="s" style="font-weight:400;font-size:14px"></span></div>
+
+      <div class="h2">ما يصل للمريض فورًا</div>
+      <div class="reply" id="r"></div>
+      <p class="time" id="t"></p>
+    </div>
+  </div>
+
+  <p class="foot">نموذج تجريبي أعدّته FTN Automation</p>
+</div>
+
+<script>
+var ENDPOINT = "https://jnbjnh.app.n8n.cloud/webhook/clinic-triage";
+var m = document.getElementById("m"), go = document.getElementById("go"),
+    err = document.getElementById("err"), out = document.getElementById("out");
+
+var chips = document.getElementsByClassName("chip");
+for (var i = 0; i < chips.length; i++) {
+  chips[i].onclick = function(){ m.value = this.getAttribute("data-t"); err.style.display = "none"; };
+}
+
+function esc(s){ return String(s == null ? "" : s).replace(/&/g,"&amp;").replace(/</g,"&lt;"); }
+
+go.onclick = function(){
+  var text = m.value.trim();
+  var ph = document.getElementById("ph").value.trim();
+  var nm = document.getElementById("nm").value.trim();
+  if (text.length < 5) { err.textContent = "اكتب رسالة أطول قليلًا."; err.style.display = "block"; return; }
+  if (ph.replace(/[^0-9]/g, "").length < 8) {
+    err.textContent = "اكتب رقم تواصل صحيح ليتمكن الفريق من الرد عليك.";
+    err.style.display = "block"; return;
+  }
+  err.style.display = "none";
+  out.style.display = "none";
+  go.disabled = true;
+  go.innerHTML = 'جارٍ القراءة<span class="spin"></span>';
+  var t0 = Date.now();
+
+  fetch(ENDPOINT, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ message: text, contact: ph, name: nm })
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(res){
+    if (!res || !res.department) throw new Error("empty");
+    document.getElementById("c").textContent = res.complaint;
+    document.getElementById("d").textContent = res.department;
+    var urgent = String(res.priority).indexOf("عاجل") !== -1 && String(res.priority).indexOf("غير") === -1;
+    document.getElementById("p").innerHTML =
+      '<span class="tag' + (urgent ? ' u' : '') + '">' + esc(res.priority) + '</span>';
+    document.getElementById("s").textContent = res.summary;
+    document.getElementById("r").textContent = res.reply;
+    document.getElementById("t").textContent =
+      "استغرق " + ((Date.now() - t0) / 1000).toFixed(1) + " ثانية — بلا تدخل من أحد";
+    out.style.display = "block";
+    go.disabled = false;
+    go.textContent = "جرّب رسالة أخرى";
+  })
+  .catch(function(){
+    go.disabled = false;
+    go.textContent = "أرسل الرسالة";
+    err.textContent = "حدث خطأ. حاول مرة أخرى بعد لحظات.";
+    err.style.display = "block";
+  });
+};
+</script>
+</body>
+</html>
