@@ -1,186 +1,301 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>استقبال المرضى الذكي — مجمع الخليج الطبي</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --navy:#1B3A8C; --navy-d:#142C6B; --green:#22B14C; --green-d:#1B9440;
-    --green-bg:#E8F7ED; --navy-bg:#EDF1FB;
-    --ink:#16203A; --muted:#5C6784; --line:#E1E6F0; --bg:#F5F7FB; --card:#fff;
-    --urgent:#C0392B; --urgent-bg:#FBEAE8;
+    --blue:#003D9D;
+    --blue-deep:#00307C;
+    --blue-tint:#EAF0FA;
+    --green:#0A9441;
+    --green-deep:#087A36;
+    --green-tint:#E6F5EC;
+    --ink:#0E1726;
+    --muted:#5B6779;
+    --line:#DCE3EC;
+    --paper:#F3F6FB;
+    --alert:#B3261E;
+    --alert-tint:#FBEBEA;
+    --amber:#8A5A00;
+    --amber-tint:#FBF3E3;
   }
-  *{ box-sizing:border-box; }
-  body{ margin:0; background:var(--bg); color:var(--ink);
-        font-family:-apple-system,"Segoe UI",Tahoma,sans-serif; line-height:1.7;
-        padding:0 0 44px; }
-  .wrap{ max-width:560px; margin:0 auto; padding:0 16px; }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"IBM Plex Sans Arabic",system-ui,"Segoe UI",Tahoma,sans-serif;
+    font-size:16px;line-height:1.75;
+    -webkit-font-smoothing:antialiased;
+  }
+  .shell{max-width:1120px;margin:0 auto;padding:0 20px}
 
-  .bar{ background:var(--navy); padding:16px 0; margin-bottom:22px; }
-  .bar .wrap{ display:flex; align-items:center; gap:11px; }
-  .k{ width:38px; height:38px; background:var(--green); border-radius:8px; color:#fff;
-      font-size:23px; font-weight:700; display:flex; align-items:center; justify-content:center;
-      font-family:Arial,sans-serif; flex:none; }
-  .bn{ color:#fff; font-size:17px; font-weight:600; line-height:1.3; }
-  .be{ color:#B9C6E8; font-size:11px; letter-spacing:.07em; }
+  /* ---------- brand bar ---------- */
+  .bar{background:#fff;border-bottom:1px solid var(--line)}
+  .bar .shell{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-top:16px;padding-bottom:16px}
+  .logo{height:46px;width:auto;display:block}
+  .live{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:13.5px;white-space:nowrap}
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 0 4px var(--green-tint)}
+  @media (max-width:520px){ .logo{height:36px} .live span{display:none} }
 
-  h1{ font-size:22px; font-weight:600; margin:0 0 6px; line-height:1.45; }
-  .sub{ color:var(--muted); margin:0 0 20px; font-size:15px; }
-  .card{ background:var(--card); border:1px solid var(--line); border-radius:14px; padding:18px;
-         box-shadow:0 1px 3px rgba(27,58,140,.06); }
-  label{ display:block; font-size:14px; color:var(--muted); margin:0 0 6px; }
-  textarea,input{ width:100%; font:inherit; font-size:16px; padding:12px;
-            border:1px solid var(--line); border-radius:10px; background:#fff; color:var(--ink); }
-  textarea{ min-height:110px; resize:vertical; }
-  textarea:focus,input:focus{ outline:none; border-color:var(--navy); box-shadow:0 0 0 3px var(--navy-bg); }
-  .two{ display:flex; gap:10px; margin-bottom:14px; }
-  .two>div{ flex:1; min-width:0; }
-  .opt{ color:#9aa4bd; font-weight:400; }
-  button{ width:100%; font:inherit; font-size:16px; font-weight:600; padding:14px; margin-top:14px;
-          border:0; border-radius:10px; background:var(--green); color:#fff; cursor:pointer; }
-  button:active{ background:var(--green-d); }
-  button:disabled{ opacity:.6; cursor:default; }
-  .chips{ display:flex; flex-wrap:wrap; gap:8px; margin:10px 0 0; }
-  .chip{ font-size:13px; background:var(--navy-bg); color:var(--navy); border:0; width:auto;
-         padding:7px 13px; border-radius:20px; margin:0; cursor:pointer; font-weight:500; }
-  .err{ color:var(--urgent); font-size:14px; margin:10px 0 0; display:none; }
-  .note{ text-align:center; font-size:13px; color:var(--muted); margin:12px 0 0; }
-  #out{ display:none; margin-top:20px; }
-  .h2{ font-size:15px; font-weight:600; margin:20px 0 8px; color:var(--navy);
-       border-right:3px solid var(--green); padding-right:9px; }
-  .row{ display:flex; justify-content:space-between; align-items:center;
-        border-bottom:1px solid var(--line); padding:11px 0; gap:12px; }
-  .row:last-child{ border-bottom:0; }
-  .k2{ font-size:14px; color:var(--muted); white-space:nowrap; }
-  .v{ font-size:15px; font-weight:600; text-align:left; }
-  .dept{ color:var(--navy); }
-  .tag{ font-size:13px; padding:4px 12px; border-radius:7px;
-        background:var(--green-bg); color:var(--green-d); font-weight:600; }
-  .tag.u{ background:var(--urgent-bg); color:var(--urgent); }
-  .reply{ background:var(--navy-bg); border-radius:10px; padding:14px; margin-top:6px;
-          font-size:15px; color:var(--navy-d); }
-  .time{ text-align:center; font-size:13px; color:var(--muted); margin-top:16px; }
-  .foot{ text-align:center; font-size:12px; color:var(--muted); margin-top:22px; }
-  .spin{ display:inline-block; width:15px; height:15px; border:2px solid rgba(255,255,255,.35);
-         border-top-color:#fff; border-radius:50%; animation:r .7s linear infinite;
-         vertical-align:-3px; margin-left:8px; }
-  @keyframes r{ to{ transform:rotate(360deg);} }
+  /* ---------- hero ---------- */
+  .hero{background:var(--blue);color:#fff;position:relative;overflow:hidden}
+  .hero::after{
+    content:"";position:absolute;inset-block:0;inset-inline-start:-40px;width:190px;
+    background:var(--green);transform:skewX(-14deg);opacity:.85;
+  }
+  @media (max-width:860px){ .hero::after{width:0} }
+  .hero .shell{position:relative;z-index:1;padding-top:44px;padding-bottom:44px}
+  .hero h1{font-size:clamp(26px,4.4vw,38px);line-height:1.35;font-weight:700;margin:0 0 12px;max-width:19ch}
+  .hero p{margin:0;max-width:56ch;color:#D6E1F5;font-size:17px}
+
+  /* ---------- layout ---------- */
+  .grid{display:grid;grid-template-columns:minmax(0,0.92fr) minmax(0,1.08fr);gap:24px;align-items:start;padding-top:30px;padding-bottom:56px}
+  @media (max-width:880px){.grid{grid-template-columns:1fr}}
+
+  .card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:24px}
+  .card.form{border-top:4px solid var(--green)}
+
+  /* ---------- form ---------- */
+  label{display:block;font-weight:600;font-size:14.5px;margin:0 0 7px}
+  .hint{color:var(--muted);font-weight:400;font-size:12.5px}
+  input,textarea{
+    width:100%;font:inherit;color:inherit;background:#fff;
+    border:1.5px solid var(--line);border-radius:11px;padding:11px 14px;
+    transition:border-color .15s, box-shadow .15s;
+  }
+  input:focus,textarea:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-tint)}
+  input.bad{border-color:var(--alert);background:#FFFCFB}
+  input.bad:focus{box-shadow:0 0 0 3px var(--alert-tint)}
+  input.good{border-color:var(--green)}
+  input.good:focus{box-shadow:0 0 0 3px var(--green-tint)}
+  textarea{min-height:116px;resize:vertical;line-height:1.75}
+  .field{margin-bottom:19px}
+  .note{font-size:13px;margin-top:7px;display:none}
+  .note.show{display:block}
+  .note.bad{color:var(--alert)}
+  .note.good{color:var(--green-deep)}
+  input[dir=ltr]{direction:ltr;text-align:right;font-variant-numeric:tabular-nums;letter-spacing:.03em}
+
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin:-6px 0 20px}
+  .chip{border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:6px 14px;font:inherit;font-size:13.5px;color:var(--muted);cursor:pointer;transition:.15s}
+  .chip:hover,.chip:focus-visible{border-color:var(--blue);color:var(--blue);outline:none}
+
+  .send{
+    width:100%;font:inherit;font-weight:600;font-size:16.5px;color:#fff;background:var(--green);
+    border:0;border-radius:11px;padding:14px;cursor:pointer;transition:background .15s,opacity .15s;
+  }
+  .send:hover:not(:disabled){background:var(--green-deep)}
+  .send:focus-visible{outline:3px solid var(--blue-tint);outline-offset:2px}
+  .send:disabled{opacity:.4;cursor:not-allowed}
+  .fine{color:var(--muted);font-size:12.5px;margin:14px 0 0;text-align:center}
+
+  /* ---------- result ---------- */
+  .empty{
+    border:1.5px dashed var(--line);border-radius:16px;padding:52px 28px;text-align:center;color:var(--muted);
+    background:linear-gradient(180deg,#fff,transparent);
+  }
+  .clock{display:flex;align-items:baseline;gap:10px;padding-bottom:18px;margin-bottom:18px;border-bottom:1px solid var(--line)}
+  .clock b{font-size:40px;font-weight:700;color:var(--green);line-height:1;font-variant-numeric:tabular-nums}
+  .clock span{color:var(--muted);font-size:13.5px;max-width:30ch}
+
+  .head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}
+  .head h2{font-size:15.5px;font-weight:600;margin:0;color:var(--blue)}
+  .badge{font-size:13px;font-weight:600;padding:5px 13px;border-radius:999px;white-space:nowrap}
+  .b-alert{background:var(--alert-tint);color:var(--alert)}
+  .b-review{background:var(--amber-tint);color:var(--amber)}
+  .b-normal{background:var(--green-tint);color:var(--green-deep)}
+
+  dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:11px 18px;align-items:baseline}
+  dt{color:var(--muted);font-size:13.5px;white-space:nowrap}
+  dd{margin:0;font-weight:500}
+  dd.tel{direction:ltr;text-align:right;font-variant-numeric:tabular-nums}
+
+  .block{margin-top:19px;padding-top:17px;border-top:1px solid var(--line)}
+  .block h3{font-size:13.5px;color:var(--muted);font-weight:600;margin:0 0 6px}
+  .block p{margin:0}
+
+  .reply{margin-top:20px;background:var(--blue-tint);border-radius:13px;padding:19px 21px}
+  .reply h3{font-size:13.5px;color:var(--blue);font-weight:600;margin:0 0 8px}
+  .reply p{margin:0}
+
+  .fail{background:var(--amber-tint);border-color:#EBDCBB}
+
+  footer{border-top:1px solid var(--line);background:#fff}
+  footer .shell{display:flex;align-items:center;justify-content:space-between;gap:14px;padding-top:18px;padding-bottom:18px;color:var(--muted);font-size:13px;flex-wrap:wrap}
+
+  .spin{display:inline-block;width:15px;height:15px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite;vertical-align:-2px;margin-inline-start:8px}
+  @keyframes sp{to{transform:rotate(360deg)}}
+  @media (prefers-reduced-motion:reduce){.spin{animation-duration:2.4s}}
 </style>
 </head>
 <body>
 
 <div class="bar">
-  <div class="wrap">
-    <div class="k">K</div>
-    <div>
-      <div class="bn">مجمع الخليج الطبي</div>
-      <div class="be">ALKHALEEJ MEDICAL CENTER</div>
-    </div>
+  <div class="shell">
+    <img class="logo" alt="مجمع الخليج الطبي" src="data:image/png;base64,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">
+    <div class="live"><i class="dot"></i><span>الاستقبال الذكي يعمل الآن</span></div>
   </div>
 </div>
 
-<div class="wrap">
-  <h1>استقبال المرضى الذكي</h1>
-  <p class="sub">اكتب رسالة كما يكتبها مريض حقيقي. النظام يفهم الشكوى، يحدد القسم المناسب، ويكتب ملخصًا للطبيب — خلال ثوانٍ.</p>
-
-  <div class="card">
-    <div class="two">
-      <div>
-        <label for="nm">الاسم <span class="opt">(اختياري)</span></label>
-        <input id="nm" type="text" placeholder="محمد">
-      </div>
-      <div>
-        <label for="ph">رقم التواصل</label>
-        <input id="ph" type="tel" inputmode="tel" placeholder="05xxxxxxxx">
-      </div>
-    </div>
-
-    <label for="m">رسالة المريض</label>
-    <textarea id="m" placeholder="مثال: عندي وجع في ضرسي من يومين والخد منتفخ…"></textarea>
-
-    <div class="chips">
-      <button class="chip" type="button" data-t="عندي وجع شديد في ضرسي من يومين والخد منتفخ">ألم أسنان</button>
-      <button class="chip" type="button" data-t="ولدي عمره ٥ سنوات عنده حرارة وكحة من أمس">طفل مريض</button>
-      <button class="chip" type="button" data-t="عندي حبوب وحكة في الوجه من أسبوع ولا تروح">مشكلة جلدية</button>
-      <button class="chip" type="button" data-t="وقعت وصار عندي ألم في الكاحل ما أقدر أمشي عليه">إصابة</button>
-    </div>
-
-    <button id="go" type="button">أرسل الرسالة</button>
-    <p class="err" id="err"></p>
-    <p class="note">لا يُحفظ أي بريد أو رقم. نسخة تجريبية.</p>
-
-    <div id="out">
-      <div class="h2">ما يصل لفريق الاستقبال</div>
-      <div class="row"><span class="k2">الشكوى</span><span class="v" id="c"></span></div>
-      <div class="row"><span class="k2">القسم المقترح</span><span class="v dept" id="d"></span></div>
-      <div class="row"><span class="k2">الأولوية</span><span id="p"></span></div>
-      <div class="row"><span class="k2">ملخص للطبيب</span><span class="v" id="s" style="font-weight:400;font-size:14px"></span></div>
-
-      <div class="h2">ما يصل للمريض فورًا</div>
-      <div class="reply" id="r"></div>
-      <p class="time" id="t"></p>
-    </div>
+<div class="hero">
+  <div class="shell">
+    <h1>رسالة المريض تصل لفريق الاستقبال مرتّبة وجاهزة</h1>
+    <p>اكتب رسالة كما يكتبها مريض حقيقي. النظام يقرأ الشكوى، يحدّد القسم والتخصص، يكتب ملخصًا للطبيب، ويرد على المريض — خلال ثوانٍ.</p>
   </div>
-
-  <p class="foot">نموذج تجريبي أعدّته FTN Automation</p>
 </div>
+
+<div class="shell">
+  <div class="grid">
+
+    <section class="card form">
+      <div class="field">
+        <label for="name">الاسم <span class="hint">(اختياري)</span></label>
+        <input id="name" type="text" autocomplete="name" placeholder="أبو محمد">
+      </div>
+
+      <div class="field">
+        <label for="phone">رقم الجوال <span class="hint">— سعودي يبدأ بـ 05</span></label>
+        <input id="phone" type="tel" dir="ltr" inputmode="tel" autocomplete="tel" placeholder="05XXXXXXXX" maxlength="17">
+        <p class="note bad" id="phoneErr"></p>
+        <p class="note good" id="phoneOk"></p>
+      </div>
+
+      <div class="field">
+        <label for="msg">رسالة المريض</label>
+        <textarea id="msg" placeholder="اكتب شكواك كما تكتبها في الواتساب"></textarea>
+      </div>
+
+      <div class="chips">
+        <button class="chip" type="button" data-fill="ولدي عمره سنتين طاح من الدرج وراسه منتفخ ويبكي بشدة الحين">إصابة طفل</button>
+        <button class="chip" type="button" data-fill="أسناني توجعني واللثة منتفخة من يومين وما أقدر آكل">ألم أسنان</button>
+        <button class="chip" type="button" data-fill="عندي حساسية وحبوب في الوجه من أسبوع وتزيد مع الشمس">مشكلة جلدية</button>
+        <button class="chip" type="button" data-fill="عندي ألم وتعب من فترة وما أدري أروح لأي دكتور">شكوى غامضة</button>
+      </div>
+
+      <button class="send" id="send" disabled>أرسل الرسالة</button>
+      <p class="fine">نموذج تجريبي من إعداد FTN Automation. الحالات المرسلة تُسجَّل في سجل تجريبي.</p>
+    </section>
+
+    <section id="stage">
+      <div class="empty">أرسل رسالة لترى ما يصل لفريق الاستقبال، وما يصل للمريض.</div>
+    </section>
+
+  </div>
+</div>
+
+<footer>
+  <div class="shell">
+    <span>مجمع الخليج الطبي — عرض توضيحي</span>
+    <span>تنفيذ FTN Automation</span>
+  </div>
+</footer>
 
 <script>
-var ENDPOINT = "https://jnbjnh.app.n8n.cloud/webhook/clinic-triage";
-var m = document.getElementById("m"), go = document.getElementById("go"),
-    err = document.getElementById("err"), out = document.getElementById("out");
+const ENDPOINT = "https://jnbjnh.app.n8n.cloud/webhook/clinic-triage";
 
-var chips = document.getElementsByClassName("chip");
-for (var i = 0; i < chips.length; i++) {
-  chips[i].onclick = function(){ m.value = this.getAttribute("data-t"); err.style.display = "none"; };
+const $ = id => document.getElementById(id);
+const phone = $("phone"), msg = $("msg"), nameF = $("name");
+const phoneErr = $("phoneErr"), phoneOk = $("phoneOk"), sendBtn = $("send"), stage = $("stage");
+
+const AR = "٠١٢٣٤٥٦٧٨٩", FA = "۰۱۲۳۴۵۶۷۸۹";
+const toEn = t => String(t).replace(/[٠-٩]/g, d => AR.indexOf(d)).replace(/[۰-۹]/g, d => FA.indexOf(d));
+
+// يوحّد أي صيغة سعودية إلى 05XXXXXXXX
+function normalizeSaudi(v){
+  let d = toEn(v).replace(/[^0-9]/g, "");
+  if (d.indexOf("00966") === 0) d = d.slice(5);
+  else if (d.indexOf("966") === 0) d = d.slice(3);
+  if (d.length === 9 && d.charAt(0) === "5") d = "0" + d;
+  return d;
+}
+function checkPhone(v){
+  const d = normalizeSaudi(v);
+  if (!d) return { ok:false, msg:"" };
+  if (d.charAt(0) !== "0" && d.charAt(0) !== "5") return { ok:false, msg:"الرقم يجب أن يكون جوالًا سعوديًا يبدأ بـ 05" };
+  if (d.length < 10) return { ok:false, msg:"الرقم ناقص — الجوال السعودي عشرة أرقام" };
+  if (d.length > 10) return { ok:false, msg:"الرقم زائد — الجوال السعودي عشرة أرقام" };
+  if (!/^05[0-9]{8}$/.test(d)) return { ok:false, msg:"الرقم يجب أن يكون جوالًا سعوديًا يبدأ بـ 05" };
+  if (/^(\d)\1{7}$/.test(d.slice(2)) || d.slice(2) === "12345678") return { ok:false, msg:"هذا الرقم غير حقيقي" };
+  return { ok:true, value:d };
 }
 
-function esc(s){ return String(s == null ? "" : s).replace(/&/g,"&amp;").replace(/</g,"&lt;"); }
+function validate(){
+  const r = checkPhone(phone.value);
+  const filled = phone.value.trim().length > 0;
+  phone.classList.toggle("bad", filled && !r.ok);
+  phone.classList.toggle("good", r.ok);
+  phoneErr.textContent = r.msg || "";
+  phoneErr.classList.toggle("show", !!r.msg);
+  phoneOk.textContent = r.ok ? "الرقم صالح: " + r.value : "";
+  phoneOk.classList.toggle("show", r.ok);
+  sendBtn.disabled = !(r.ok && msg.value.trim().length >= 3);
+}
+phone.addEventListener("input", validate);
+msg.addEventListener("input", validate);
+document.querySelectorAll(".chip").forEach(c => c.addEventListener("click", () => {
+  msg.value = c.dataset.fill; validate(); msg.focus();
+}));
 
-go.onclick = function(){
-  var text = m.value.trim();
-  var ph = document.getElementById("ph").value.trim();
-  var nm = document.getElementById("nm").value.trim();
-  if (text.length < 5) { err.textContent = "اكتب رسالة أطول قليلًا."; err.style.display = "block"; return; }
-  if (ph.replace(/[^0-9]/g, "").length < 8) {
-    err.textContent = "اكتب رقم تواصل صحيح ليتمكن الفريق من الرد عليك.";
-    err.style.display = "block"; return;
+const esc = t => String(t == null ? "" : t).replace(/[&<>"]/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[ch]));
+
+function render(data, seconds){
+  const type = data.alert_type || (data.priority === "عاجل" ? "عاجل" : "عادي");
+  const cls = type === "عاجل" ? "b-alert" : (type === "يحتاج تقييم" ? "b-review" : "b-normal");
+  const review = data.needs_review && data.review_reason
+    ? '<div class="block"><h3>سبب المراجعة</h3><p>' + esc(data.review_reason) + '</p></div>' : "";
+
+  stage.innerHTML =
+    '<div class="card">' +
+      '<div class="clock"><b>' + seconds + 'ث</b><span>من إرسال الرسالة إلى وصول البطاقة لفريق الاستقبال</span></div>' +
+      '<div class="head"><h2>ما يصل لفريق الاستقبال</h2><span class="badge ' + cls + '">' + esc(type) + '</span></div>' +
+      '<dl>' +
+        '<dt>الشكوى</dt><dd>' + esc(data.complaint) + '</dd>' +
+        '<dt>القسم</dt><dd>' + esc(data.department) + '</dd>' +
+        '<dt>التخصص</dt><dd>' + esc(data.specialist || "يُحدّد بعد الفحص") + '</dd>' +
+        '<dt>للتواصل</dt><dd class="tel">' + esc(data.contact) + '</dd>' +
+      '</dl>' +
+      '<div class="block"><h3>ملخص للطبيب</h3><p>' + esc(data.summary) + '</p></div>' +
+      review +
+      '<div class="reply"><h3>ما يصل للمريض فورًا</h3><p>' + esc(data.reply) + '</p></div>' +
+    '</div>';
+}
+
+const renderFail = text => { stage.innerHTML = '<div class="card fail">' + esc(text) + '</div>'; };
+
+sendBtn.addEventListener("click", async () => {
+  const r = checkPhone(phone.value);
+  if (!r.ok || msg.value.trim().length < 3) { validate(); return; }
+
+  sendBtn.disabled = true;
+  const original = sendBtn.textContent;
+  sendBtn.innerHTML = 'جارٍ الإرسال<span class="spin"></span>';
+  const t0 = performance.now();
+
+  try {
+    const res = await fetch(ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name: nameF.value.trim(), contact: r.value, message: msg.value.trim() })
+    });
+    const seconds = ((performance.now() - t0) / 1000).toFixed(1);
+    const data = await res.json();
+    if (data && data.ok) render(data, seconds);
+    else renderFail((data && data.reply) || "تعذّر استقبال الحالة. حاول مرة أخرى.");
+  } catch (e) {
+    renderFail("تعذّر الاتصال بالخادم. تحقق من الاتصال وحاول مرة أخرى.");
+  } finally {
+    sendBtn.textContent = original;
+    validate();
   }
-  err.style.display = "none";
-  out.style.display = "none";
-  go.disabled = true;
-  go.innerHTML = 'جارٍ القراءة<span class="spin"></span>';
-  var t0 = Date.now();
+});
 
-  fetch(ENDPOINT, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ message: text, contact: ph, name: nm })
-  })
-  .then(function(r){ return r.json(); })
-  .then(function(res){
-    if (!res || !res.department) throw new Error("empty");
-    document.getElementById("c").textContent = res.complaint;
-    document.getElementById("d").textContent = res.department;
-    var urgent = String(res.priority).indexOf("عاجل") !== -1 && String(res.priority).indexOf("غير") === -1;
-    document.getElementById("p").innerHTML =
-      '<span class="tag' + (urgent ? ' u' : '') + '">' + esc(res.priority) + '</span>';
-    document.getElementById("s").textContent = res.summary;
-    document.getElementById("r").textContent = res.reply;
-    document.getElementById("t").textContent =
-      "استغرق " + ((Date.now() - t0) / 1000).toFixed(1) + " ثانية — بلا تدخل من أحد";
-    out.style.display = "block";
-    go.disabled = false;
-    go.textContent = "جرّب رسالة أخرى";
-  })
-  .catch(function(){
-    go.disabled = false;
-    go.textContent = "أرسل الرسالة";
-    err.textContent = "حدث خطأ. حاول مرة أخرى بعد لحظات.";
-    err.style.display = "block";
-  });
-};
+validate();
 </script>
 </body>
 </html>
